@@ -11,42 +11,27 @@ public class Persona extends Thread {
 
     public void run(){
         int aux;
-        while (!error) {
+        for (int i = 0; i < 200 ; i++) {
+            try {
+                Thread.sleep(20);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             aux = random();
-            if(!cuenta.ingresarDinero(aux))
-                error = true;
-            System.out.println(nombre + ", Saldo: "+cuenta.getSaldo() + " + " +aux);
+
+            cuenta.ingresarDinero(aux, nombre);
+
+
             try {
-                Thread.sleep(100);
+                Thread.sleep(20);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
             aux = random();
-            if(!cuenta.sacarDinero(aux))
-                error = true;
-            System.out.println(nombre + ", Saldo: "+cuenta.getSaldo() + " - " +aux);
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
 
-            /*if(!cuenta.ingresarDinero(random()))
-                error = true;
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            cuenta.sacarDinero(aux, nombre);
 
-            if(!cuenta.sacarDinero(random()))
-                error = true;
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }*/
+
         }
     }
     private int random(){

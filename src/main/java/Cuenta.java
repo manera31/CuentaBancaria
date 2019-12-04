@@ -1,52 +1,49 @@
 public class Cuenta {
     private double saldo;
     private double maxSaldo;
-    private boolean disponible;
 
 
     public Cuenta(double saldo, double maxSaldo) {
         this.saldo = saldo;
         this.maxSaldo = maxSaldo;
-        disponible = false;
     }
 
-    public synchronized boolean ingresarDinero(double dineroAIngresar){
-        while (disponible == true){
+    public synchronized void ingresarDinero(double dineroAIngresar, String nombre){
+        while ((saldo + dineroAIngresar) > maxSaldo) {
+            System.out.println(nombre + " cantidad a ingresar " + dineroAIngresar + " saldo: " + saldo);
             try {
                 wait();
-            } catch (InterruptedException e) {
+            }catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        disponible = true;
-        notifyAll();
         if((saldo + dineroAIngresar) > maxSaldo){
-            return false;
+            System.out.println(nombre + " intenta sumar. Se ha alcanzado el maximo. Intento de suma " + dineroAIngresar + " (" + (saldo+dineroAIngresar) + ")");
+
         } else {
+            System.out.print(nombre + ", Saldo: " + saldo + " + " + dineroAIngresar + " = ");
             saldo += dineroAIngresar;
-            return true;
+            System.out.println(saldo);
         }
+        notifyAll();
     }
 
-    public synchronized boolean sacarDinero(double cantidadASacar){
-        while (disponible == false){
+    public synchronized void sacarDinero(double cantidadASacar, String nombre){
+        while ((saldo - cantidadASacar) < 0) {
+            System.out.println(nombre + " cantidad a sacar " + cantidadASacar + " saldo: " + saldo);
             try {
-                wait();
-            } catch (InterruptedException e) {
+                wait(); }
+            catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        disponible = false;
-        notifyAll();
         if((saldo - cantidadASacar) < 0){
-            return false;
+            System.out.println(nombre + " intenta restar. Se ha alcanzado el minimo. Intento de resta " + cantidadASacar+ " (" + (saldo+cantidadASacar) + ")");
         }else {
+            System.out.print(nombre + ", Saldo: " + saldo + " - " + cantidadASacar + " = ");
             saldo -= cantidadASacar;
-            return true;
+            System.out.println(saldo);
         }
-    }
-
-    public double getSaldo() {
-        return saldo;
+        notifyAll();
     }
 }
